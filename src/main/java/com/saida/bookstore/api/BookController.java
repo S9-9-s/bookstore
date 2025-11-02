@@ -36,6 +36,9 @@ public class BookController {
             @Parameter(description = "ID книги", required = true, example = "1")
             @PathVariable Long id
     ) {
-        return ResponseEntity.ok(bookMapper.toResponse(bookService.findBookById(id)));
+        return bookService.findBookById(id)
+                .map(bookMapper::toResponse)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }

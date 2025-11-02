@@ -2,7 +2,9 @@ package com.saida.bookstore.service;
 
 import com.saida.bookstore.dto.BookDto;
 
+import java.util.Optional;
+
 public interface BookService {
 
-    BookDto findBookById(Long id);
+    Optional<BookDto> findBookById(Long id);
 }
