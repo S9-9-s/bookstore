@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,6 +37,25 @@ public class BookRepositoryImpl implements BookRepository {
             log.debug("Book not found with id: {}", id);
             return Optional.empty();
         }
+    }
+
+
+    @Override
+    public List<BookDto> findAllBooks() {
+        // todo: implement me
+        return List.of();
+    }
+
+    @Override
+    public BookDto saveBook(BookDto bookDto) {
+        // todo: implement me
+        return null;
+    }
+
+
+    @Override
+    public void deleteBookById(Long id) {
+        // todo: implement me
     }
 
     private final RowMapper<BookDto> bookRowMapper = (rs, rowNum) ->

@@ -1,4 +1,12 @@
 package com.saida.bookstore.api.request;
 
-public class BookRequest {
+import java.math.BigDecimal;
+
+public record BookRequest(
+        String title,
+        String author,
+        String isbn,
+        BigDecimal price,
+        Integer publicationYear
+) {
 }
