@@ -4,6 +4,7 @@ import com.saida.bookstore.dto.ErrorResponse;
 import com.saida.bookstore.exception.BookAlreadyExistsException;
 import com.saida.bookstore.exception.BookNotFoundException;
 import com.saida.bookstore.exception.InvalidBookDataException;
+import com.saida.bookstore.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +81,22 @@ public class GlobalExceptionHandler {
                 .message("Request validation failed")
                 .path(request.getDescription(false))
                 .details(errors)
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex, WebRequest request) {
+        log.warn("Validation failed: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Validation Failed")
+                .message(ex.getMessage())
+                .path(request.getDescription(false))
+                .details(Map.of("errors", String.join(", ", ex.getErrors())))
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

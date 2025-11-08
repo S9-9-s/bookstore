@@ -4,7 +4,7 @@ import com.saida.bookstore.dto.BookDto;
 import com.saida.bookstore.entity.BookEntity;
 import com.saida.bookstore.exception.BookAlreadyExistsException;
 import com.saida.bookstore.exception.BookNotFoundException;
-import com.saida.bookstore.exception.InvalidBookDataException;
+import com.saida.bookstore.validator.CompositeBookValidator;
 import com.saida.bookstore.mapper.BookMapper;
 import com.saida.bookstore.repository.BookRepository;
 import com.saida.bookstore.service.BookService;
@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.Year;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,10 +20,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private static final int MIN_PUBLICATION_YEAR = 1500;
-
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
+    private final CompositeBookValidator compositeBookValidator;
 
     @Override
     public BookDto getBookById(UUID publicId) {
@@ -48,7 +46,7 @@ public class BookServiceImpl implements BookService {
     public BookDto saveBook(BookDto bookDto) {
         log.debug("Creating new book with title: {}", bookDto.title());
 
-        validateBookData(bookDto);
+        compositeBookValidator.validate(bookDto);
 
         if (bookRepository.existsByIsbn(bookDto.isbn())) {
             throw new BookAlreadyExistsException("Book with ISBN '" + bookDto.isbn() + "' already exists");
@@ -65,7 +63,7 @@ public class BookServiceImpl implements BookService {
     public BookDto updateBook(UUID publicId, BookDto bookDto) {
         log.debug("Updating book with publicId: {}", publicId);
 
-        validateBookData(bookDto);
+        compositeBookValidator.validate(bookDto);
 
         BookEntity existingEntity = bookRepository.findById(publicId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with publicId: " + publicId));
@@ -104,31 +102,5 @@ public class BookServiceImpl implements BookService {
 
         bookRepository.deleteById(publicId);
         log.info("Successfully deleted book with publicId: {}", publicId);
-    }
-
-    private void validateBookData(BookDto bookDto) {
-        if (bookDto.price() == null || bookDto.price().compareTo(java.math.BigDecimal.ZERO) <= 0) {
-            throw new InvalidBookDataException("Price must be greater than 0");
-        }
-
-        int currentYear = Year.now().getValue();
-        if (bookDto.publicationYear() == null ||
-                bookDto.publicationYear() < MIN_PUBLICATION_YEAR ||
-                bookDto.publicationYear() > currentYear) {
-            throw new InvalidBookDataException(String.format("Publication year must be between %s and %s",
-                    MIN_PUBLICATION_YEAR, currentYear));
-        }
-
-        if (bookDto.title() == null || bookDto.title().trim().isEmpty()) {
-            throw new InvalidBookDataException("Title must not be empty");
-        }
-
-        if (bookDto.author() == null || bookDto.author().trim().isEmpty()) {
-            throw new InvalidBookDataException("Author must not be empty");
-        }
-
-        if (bookDto.isbn() == null || bookDto.isbn().trim().isEmpty()) {
-            throw new InvalidBookDataException("ISBN must not be empty");
-        }
     }
 }
