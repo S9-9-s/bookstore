@@ -3,16 +3,18 @@ package com.saida.bookstore.service;
 import com.saida.bookstore.dto.BookDto;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 public interface BookService {
 
-    Optional<BookDto> findBookById(Long id);
+    BookDto getBookById(UUID publicId);
 
-    List<BookDto> findAllBooks();
+    List<BookDto> getAllBooks();
 
     BookDto saveBook(BookDto bookDto);
 
-    void deleteBookById(Long id);
+    BookDto updateBook(UUID publicId, BookDto bookDto);
+
+    void deleteBookById(UUID publicId);
 
 }

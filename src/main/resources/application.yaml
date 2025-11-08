@@ -19,4 +19,4 @@ springdoc:
 
 logging:
   level:
-    com.saida.bookstore: INFO
+    com.saida.bookstore: DEBUG

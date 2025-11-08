@@ -1,17 +1,20 @@
 package com.saida.bookstore.repository;
 
-import com.saida.bookstore.dto.BookDto;
+import com.saida.bookstore.entity.BookEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface BookRepository {
 
-    Optional<BookDto> findById(Long id);
+    Optional<BookEntity> findById(UUID publicId);
 
-    List<BookDto> findAllBooks();
+    List<BookEntity> findAll();
 
-    BookDto saveBook(BookDto bookDto);
+    BookEntity save(BookEntity book);
 
-    void deleteBookById(Long id);
+    void deleteById(UUID publicId);
+
+    boolean existsByIsbn(String isbn);
 }

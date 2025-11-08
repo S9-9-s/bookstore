@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Tag(name = "Book Controller", description = "API для работы с книгами")
 @Schema(description = "book")
@@ -33,15 +34,13 @@ public class BookController {
             @ApiResponse(responseCode = "200", description = "Успешное получение книги!"),
             @ApiResponse(responseCode = "404", description = "Книга не найдена:(")
     })
-    @GetMapping("/{id}")
-    ResponseEntity<BookResponse> findBookById(
+    @GetMapping("/{publicId}")
+    ResponseEntity<BookResponse> getBookById(
             @Parameter(description = "ID книги", required = true, example = "1")
-            @PathVariable Long id
+            @PathVariable UUID publicId
     ) {
-        return bookService.findBookById(id)
-                .map(bookMapper::toResponse)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        BookDto dto = bookService.getBookById(publicId);
+        return ResponseEntity.ok().body(bookMapper.toResponse(dto));
     }
 
 
@@ -51,7 +50,7 @@ public class BookController {
     })
     @GetMapping
     public ResponseEntity<List<BookResponse>> getAllBooks() {
-        List<BookResponse> books = bookService.findAllBooks()
+        List<BookResponse> books = bookService.getAllBooks()
                 .stream()
                 .map(bookMapper::toResponse)
                 .toList();
@@ -64,17 +63,25 @@ public class BookController {
             @ApiResponse(responseCode = "201", description = "Книга успешно создана!"),
             @ApiResponse(responseCode = "400", description = "Неверные данные книги:(")
     })
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<BookResponse> saveBook(@RequestBody BookRequest request) {
         BookDto bookDto = bookService.saveBook(bookMapper.toDto(request));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bookMapper.toResponse(bookDto));
     }
 
+    @PutMapping("/{publicId}")
+    public ResponseEntity<BookResponse> updateBook(
+            @PathVariable UUID publicId,
+            @RequestBody BookRequest request) {
+        BookDto updatedBook = bookService.updateBook(publicId, bookMapper.toDto(request));
+        return ResponseEntity.ok(bookMapper.toResponse(updatedBook));
+    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable("id") Long id) {
-        bookService.deleteBookById(id);
+
+    @DeleteMapping("/{publicId}")
+    public ResponseEntity<Void> deleteBook(@PathVariable("publicId") UUID publicId) {
+        bookService.deleteBookById(publicId);
         return ResponseEntity.noContent().build();
     }
 
