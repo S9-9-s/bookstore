@@ -3,32 +3,39 @@ package com.saida.bookstore.util;
 import org.apache.logging.log4j.util.Strings;
 
 /**
- * Utility class for ISBN validation.
+ * Утилитный класс для валидации ISBN.
+ * Содержит методы для проверки формата и нормализации ISBN номеров.
  */
 public final class IsbnUtils {
 
     /**
-     * Validates both ISBN-10 and ISBN-13 formats.
+     * Регулярное выражение для проверки форматов ISBN-10 и ISBN-13.
      * <p>
-     * Examples:
+     * Примеры валидных ISBN:
      * - ISBN-10: "1234567890", "123456789X"
      * - ISBN-13: "9781234567890", "1234567890123"
      */
     public static final String ISBN_PATTERN = "^(?:\\d{9}[\\dXx]|\\d{13})$";
 
     private IsbnUtils() {
-        // Utility class
+        // Утилитный класс
     }
 
     /**
-     * Checks if string is valid ISBN-10 or ISBN-13.
+     * Проверяет, соответствует ли строка формату ISBN-10 или ISBN-13.
+     *
+     * @param isbn строка для проверки
+     * @return true если строка соответствует формату ISBN, false в противном случае
      */
     public static boolean isValidFormat(String isbn) {
         return isbn != null && isbn.matches(ISBN_PATTERN);
     }
 
     /**
-     * Removes hyphens and converts to uppercase.
+     * Нормализует ISBN: удаляет дефисы и преобразует в верхний регистр.
+     *
+     * @param isbn ISBN строка для нормализации
+     * @return нормализованная ISBN строка или null если входная строка null
      */
     public static String normalize(String isbn) {
         if (isbn == null) {
