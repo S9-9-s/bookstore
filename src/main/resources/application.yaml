@@ -1,9 +1,14 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/bookstore
+    url: jdbc:postgresql://localhost:5432/bookstore?currentSchema=bookstore
     username: bookstore
     password: password
     driver-class-name: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    default-schema: bookstore
+    liquibase-schema: bookstore
 
 springdoc:
   api-docs:

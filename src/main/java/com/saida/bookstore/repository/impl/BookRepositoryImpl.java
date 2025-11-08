@@ -39,7 +39,6 @@ public class BookRepositoryImpl implements BookRepository {
         }
     }
 
-
     @Override
     public List<BookDto> findAllBooks() {
         // todo: implement me
