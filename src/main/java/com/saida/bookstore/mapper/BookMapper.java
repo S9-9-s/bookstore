@@ -1,14 +1,16 @@
 package com.saida.bookstore.mapper;
 
+import com.saida.bookstore.api.request.BookRequest;
 import com.saida.bookstore.api.response.BookResponse;
 import com.saida.bookstore.dto.BookDto;
+import com.saida.bookstore.entity.BookEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BookMapper {
 
-    @Mapping(source = "id", target = "id")
+    @Mapping(source = "publicId", target = "publicId")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "author", target = "author")
     @Mapping(source = "isbn", target = "isbn")
@@ -17,7 +19,7 @@ public interface BookMapper {
     @Mapping(source = "createdAt", target = "createdAt")
     BookResponse toResponse(BookDto bookDto);
 
-    @Mapping(source = "id", target = "id")
+    @Mapping(source = "publicId", target = "publicId")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "author", target = "author")
     @Mapping(source = "isbn", target = "isbn")
@@ -25,4 +27,16 @@ public interface BookMapper {
     @Mapping(source = "publicationYear", target = "publicationYear")
     @Mapping(source = "createdAt", target = "createdAt")
     BookDto toDto(BookResponse bookResponse);
+
+    @Mapping(source = "title", target = "title")
+    @Mapping(source = "author", target = "author")
+    @Mapping(source = "isbn", target = "isbn")
+    @Mapping(source = "price", target = "price")
+    @Mapping(source = "publicationYear", target = "publicationYear")
+    BookDto toDto(BookRequest bookRequest);
+
+    @Mapping(target = "id", ignore = true)
+    BookEntity toEntity(BookDto dto);
+
+    BookDto toDto(BookEntity entity);
 }

@@ -1,0 +1,7 @@
+spring:
+  liquibase:
+    liquibase-schema: public
+
+logging:
+  level:
+    com.saida.bookstore: DEBUG
